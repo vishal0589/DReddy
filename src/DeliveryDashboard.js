@@ -59,7 +59,7 @@ export default function DeliveryDashboard() {
       <div className="mb-6">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Gift Delivery Performance FY 2024</h1>
+            <h1 className="text-3xl font-bold text-gray-800">Gift1 Delivery Performance FY 2024</h1>
             <p className="text-gray-600">Annual Summary Dashboard</p>
           </div>
           {/* New Summary Box */}
