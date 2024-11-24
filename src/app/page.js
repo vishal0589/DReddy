@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { TrendingUp, Package, RefreshCw, AlertTriangle } from 'lucide-react';
+import { Package, TrendingUp, AlertTriangle, Clock, RefreshCw } from 'lucide-react';
 
 const monthlyData = [
   { month: 'Jan', received: 279, finalList: 279, delivered: 278, returned: 7, leftOrg: 1, lost: 0, dispatchRate: 100 },
@@ -30,18 +30,18 @@ const THRESHOLDS = {
   DISPATCH_RATE: 95,
   RETURN_RATE: 5,
   LOST_RATE: 0.1,
-  PRE_DISPATCH_LOSS: 2
+  PRE_DISPATCH_LOSS: 2 // New threshold for pre-dispatch loss rate
 };
 
-const DeliveryDashboard = () => {
-  // Calculate key metrics
+export default function DeliveryDashboard() {
+  // Calculate totals
   const totalInitialList = 4328;
   const totalFinalList = 4264;
   const totalDelivered = 4242;
   const totalReturned = 94;
   const totalLeftOrg = 68;
   const totalLost = 2;
-
+  
   const preDispatchLoss = totalInitialList - totalFinalList;
   const preDispatchLossRate = ((preDispatchLoss / totalInitialList) * 100).toFixed(1);
   const deliverySuccess = ((totalDelivered / totalFinalList) * 100).toFixed(1);
@@ -56,71 +56,96 @@ const DeliveryDashboard = () => {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">Gift Delivery Performance Dashboard</h1>
-      
+      <div className="mb-6">
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-800">Gift Delivery Performance FY 2024</h1>
+            <p className="text-gray-600">Annual Summary Dashboard</p>
+          </div>
+          {/* New Summary Box */}
+          <Card className="bg-white p-4">
+            <h3 className="font-semibold mb-2">Gift Processing Summary</h3>
+            <div className="text-sm space-y-1">
+              <p>Initial List: {totalInitialList.toLocaleString()}</p>
+              <p className="text-red-500">Pre-dispatch Loss: {preDispatchLoss}</p>
+              <p>Final Dispatch List: {totalFinalList.toLocaleString()}</p>
+            </div>
+          </Card>
+        </div>
+      </div>
+
       {/* Key Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Card className="bg-white">
-          <CardContent className="pt-4">
+        <Card className="bg-white shadow-lg">
+          <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Pre-dispatch Loss</p>
-                <p className={`text-3xl font-bold ${parseFloat(preDispatchLossRate) <= THRESHOLDS.PRE_DISPATCH_LOSS ? 'text-green-500' : 'text-red-500'}`}>{preDispatchLossRate}%</p>
+                <p className="text-sm font-medium text-gray-500">Pre-dispatch Loss</p>
+                <p className={`text-3xl font-bold ${parseFloat(preDispatchLossRate) <= THRESHOLDS.PRE_DISPATCH_LOSS ? 'text-green-500' : 'text-red-500'}`}>
+                  {preDispatchLossRate}%
+                </p>
                 <p className="text-sm text-gray-600 mt-1">{preDispatchLoss} units lost</p>
               </div>
               <AlertTriangle className={`h-12 w-12 ${parseFloat(preDispatchLossRate) <= THRESHOLDS.PRE_DISPATCH_LOSS ? 'text-green-500' : 'text-red-500'}`} />
             </div>
-          </CardContent>
+          </CardHeader>
         </Card>
 
-        <Card className="bg-white">
-          <CardContent className="pt-4">
+        <Card className="bg-white shadow-lg">
+          <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Delivery Success</p>
-                <p className={`text-3xl font-bold ${parseFloat(deliverySuccess) >= THRESHOLDS.DELIVERY_SUCCESS ? 'text-green-500' : 'text-red-500'}`}>{deliverySuccess}%</p>
+                <p className="text-sm font-medium text-gray-500">Delivery Success</p>
+                <p className={`text-3xl font-bold ${parseFloat(deliverySuccess) >= THRESHOLDS.DELIVERY_SUCCESS ? 'text-green-500' : 'text-red-500'}`}>
+                  {deliverySuccess}%
+                </p>
                 <p className="text-sm text-gray-600 mt-1">{totalDelivered.toLocaleString()} delivered</p>
               </div>
               <TrendingUp className="h-12 w-12 text-green-500" />
             </div>
-          </CardContent>
+          </CardHeader>
         </Card>
 
-        <Card className="bg-white">
-          <CardContent className="pt-4">
+        <Card className="bg-white shadow-lg">
+          <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Return Rate</p>
-                <p className={`text-3xl font-bold ${parseFloat(returnRate) <= THRESHOLDS.RETURN_RATE ? 'text-green-500' : 'text-red-500'}`}>{returnRate}%</p>
+                <p className="text-sm font-medium text-gray-500">Return Rate</p>
+                <p className={`text-3xl font-bold ${parseFloat(returnRate) <= THRESHOLDS.RETURN_RATE ? 'text-green-500' : 'text-red-500'}`}>
+                  {returnRate}%
+                </p>
                 <p className="text-sm text-gray-600 mt-1">{totalReturned} returns</p>
               </div>
               <RefreshCw className="h-12 w-12 text-yellow-500" />
             </div>
-          </CardContent>
+          </CardHeader>
         </Card>
 
-        <Card className="bg-white">
-          <CardContent className="pt-4">
+        <Card className="bg-white shadow-lg">
+          <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Process Loss</p>
+                <p className="text-sm font-medium text-gray-500">Process Loss</p>
                 <p className="text-3xl font-bold text-gray-900">{totalLost}</p>
                 <p className="text-sm text-gray-600 mt-1">{totalLeftOrg} left org.</p>
               </div>
               <Package className="h-12 w-12 text-blue-500" />
             </div>
-          </CardContent>
+          </CardHeader>
         </Card>
       </div>
 
-      {/* Charts Section */}
+      {/* Charts Section - Kept exactly the same as previous version */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         {/* Delivery Trends Chart */}
-        <Card className="bg-white">
+        <Card className="bg-white shadow-lg">
           <CardHeader>
-            <CardTitle>Monthly Delivery Trends</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              Monthly Delivery Performance
+            </CardTitle>
           </CardHeader>
-          <CardContent>
+          <div className="p-6">
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={monthlyData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
@@ -136,15 +161,18 @@ const DeliveryDashboard = () => {
                 </LineChart>
               </ResponsiveContainer>
             </div>
-          </CardContent>
+          </div>
         </Card>
 
         {/* Returns Analysis Chart */}
-        <Card className="bg-white">
+        <Card className="bg-white shadow-lg">
           <CardHeader>
-            <CardTitle>Returns & Left Organization Analysis</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <RefreshCw className="h-5 w-5" />
+              Returns & Left Organization Analysis
+            </CardTitle>
           </CardHeader>
-          <CardContent>
+          <div className="p-6">
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={monthlyData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
@@ -159,16 +187,19 @@ const DeliveryDashboard = () => {
                 </BarChart>
               </ResponsiveContainer>
             </div>
-          </CardContent>
+          </div>
         </Card>
       </div>
 
       {/* Distribution Chart */}
-      <Card className="bg-white">
+      <Card className="bg-white shadow-lg">
         <CardHeader>
-          <CardTitle>Overall Delivery Status Distribution</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Package className="h-5 w-5" />
+            Overall Delivery Status Distribution
+          </CardTitle>
         </CardHeader>
-        <CardContent>
+        <div className="p-6">
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -192,10 +223,8 @@ const DeliveryDashboard = () => {
               </PieChart>
             </ResponsiveContainer>
           </div>
-        </CardContent>
+        </div>
       </Card>
     </div>
   );
-};
-
-export default DeliveryDashboard;
+}
